@@ -1,14 +1,13 @@
 require 'experimental_method'
 
 class Test
-
   def my_instance_method(arg1, &block)
     x = "deprecated version received(#{arg1})"
     block.call(x) if block
   end
 
   experimental_method(:my_instance_method) do |args, &block|
-    x = "experimental method received(#{args})" 
+    x = "experimental method received(#{args})"
     block.call(x) if block
   end
 
@@ -28,8 +27,19 @@ class Test
     puts "#{a}, #{b}, #{c}"
   end
 
-  class << self
+  def respect_scope_a
+    respect_scope_b
+  end
 
+  def respect_scope_b
+    5
+  end
+
+  experimental_method(:respect_scope_a) do
+    respect_scope_b
+  end
+
+  class << self
     def my_class_method(arg1, &block)
       x = "deprecated version received(#{arg1})"
       block.call(x) if block
@@ -39,10 +49,7 @@ class Test
       x = "experimental method received(#{args})"
       block.call(x) if block
     end
-
-
   end
-
 end
 
 puts ''
@@ -72,4 +79,3 @@ puts '-------'
 Test.my_class_method(1) do |x|
   puts "class method block says x = #{x}"
 end
-
